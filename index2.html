@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ekta Cinema - Tor Jonno</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+  color: white;
+  font-family: Georgia, serif;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+/* Opening */
+#opening {
+  position: fixed;
+  inset: 0;
+  background: black;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#opening h2 {
+  letter-spacing: 5px;
+  font-size: 18px;
+  margin: 15px;
+  color: #d6b36a;
+}
+
+#opening p {
+  letter-spacing: 3px;
+  margin: 10px;
+  color: #aaa;
+}
+
+#ticket {
+  margin-top: 40px;
+  padding: 15px 35px;
+  background: #b58a42;
+  color: black;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+/* Curtains */
+.curtain {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg,#390000,#a00000,#390000);
+  z-index: 8;
+  transition: transform 2.5s ease-in-out;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.open .left {
+  transform: translateX(-100%);
+}
+
+.open .right {
+  transform: translateX(100%);
+}
+
+/* Main */
+#movie {
+  display: none;
+  padding: 35px 15px;
+  animation: fade 2s;
+}
+
+@keyframes fade {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+.poster {
+  width: 85%;
+  max-width: 350px;
+  border: 4px solid #c69b51;
+  box-shadow: 0 0 30px #9b702f;
+  cursor: pointer;
+}
+
+h1 {
+  color: #d6b36a;
+  margin: 25px 0;
+  letter-spacing: 3px;
+}
+
+button {
+  padding: 13px 20px;
+  margin: 10px;
+  background: #a77b35;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Gallery */
+#gallery {
+  display: none;
+  padding: 20px;
+}
+
+#gallery img {
+  width: 90%;
+  max-width: 380px;
+  max-height: 65vh;
+  object-fit: contain;
+  border: 3px solid #c69b51;
+  margin: 20px auto;
+  display: block;
+}
+
+#counter {
+  color: #d6b36a;
+  letter-spacing: 3px;
+}
+
+/* Ending */
+#ending {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+#ending h1 {
+  font-size: 28px;
+  letter-spacing: 5px;
+}
+
+#ending p {
+  color: #aaa;
+  letter-spacing: 3px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Opening -->
+<div id="opening">
+  <h2>A FILM BY SHREOSI</h2>
+  <p>STARRING: SOUMI</p>
+  <p>PRESENTS</p>
+  <button id="ticket" onclick="startMovie()">
+    🎟 TICKET KATA
+  </button>
+</div>
+
+<!-- Curtains -->
+<div class="curtain left"></div>
+<div class="curtain right"></div>
+
+<!-- Movie -->
+<div id="movie">
+
+  <h1>🎬 NOW SHOWING</h1>
+
+  <video src="poster.mp4" class="poster" autoplay muted loop playsinline 
+       onclick="showGallery()"></video>
+
+  <h1>TUI❤️</h1>
+
+  <button onclick="playSong()">❤️ Play Song</button>
+
+  <button onclick="showGallery()">📸Aro Photo Dekh</button>
+
+  <p style="color:#aaa;margin-top:20px;">
+    A story that never ends...
+  </p>
+
+</div>
+
+<!-- Gallery -->
+<div id="gallery">
+  <h1>you❤️</h1>
+
+  <p id="counter">PHOTO 1 / 5</p>
+
+  <img id="galleryImage" src="photo1.jpg">
+
+  <button onclick="previousPhoto()">❮ Previous</button>
+  <button onclick="nextPhoto()">Next ❯</button>
+
+  <br>
+  <button onclick="backToMovie()">Back to Movie</button>
+</div>
+
+<!-- Music -->
+<audio id="song" src="song.mp3"></audio>
+
+<!-- Ending -->
+<div id="ending">
+  <h1>TO BE CONTINUED...</h1>
+  <p>INTERVAL ER POR DEKHA HOBE 🎬</p>
+</div>
+
+<script>
+
+let currentPhoto = 1;
+
+function startMovie() {
+
+  document.getElementById("opening").style.display="none";
+
+  document.body.classList.add("open");
+
+  setTimeout(() => {
+
+    document.querySelectorAll(".curtain").forEach(c => {
+      c.style.display="none";
+    });
+
+    document.getElementById("movie").style.display="block";
+
+    playSong();
+
+  }, 2600);
+
+}
+
+function playSong() {
+
+  const song = document.getElementById("song");
+
+  song.play().catch(() => {
+    alert("Tap Play Song to start music!");
+  });
+
+}
+
+function showGallery() {
+
+  document.getElementById("movie").style.display="none";
+  document.getElementById("gallery").style.display="block";
+
+  currentPhoto = 1;
+  updatePhoto();
+
+}
+
+function updatePhoto() {
+
+  document.getElementById("galleryImage").src =
+    "photo" + currentPhoto + ".jpg";
+
+  document.getElementById("counter").innerText =
+    "PHOTO " + currentPhoto + " / 5";
+
+}
+
+function nextPhoto() {
+
+  if(currentPhoto < 5) {
+    currentPhoto++;
+    updatePhoto();
+  } else {
+    backToMovie();
+  }
+
+}
+
+function previousPhoto() {
+
+  if(currentPhoto > 1) {
+    currentPhoto--;
+    updatePhoto();
+  }
+
+}
+
+function backToMovie() {
+
+  document.getElementById("gallery").style.display="none";
+  document.getElementById("movie").style.display="block";
+
+}
+
+document.getElementById("song").addEventListener("ended", () => {
+
+  document.getElementById("movie").style.display="none";
+  document.getElementById("gallery").style.display="none";
+
+  document.getElementById("ending").style.display="flex";
+
+});
+
+</script>
+
+</body>
+</html>
